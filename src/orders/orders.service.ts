@@ -3,13 +3,17 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderStatus } from './entities/order.entity';
 import { Model } from 'mongoose';
+import { Asset } from '../assets/entities/asset.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectModel(Order.name) private OrderSchema: Model<Order>) {}
+  constructor(
+    @InjectModel(Order.name)
+    private orderSchema: Model<Order>,
+  ) {}
 
   create(createOrderDto: CreateOrderDto) {
-    return this.OrderSchema.create({
+    return this.orderSchema.create({
       wallet: createOrderDto.walletId,
       asset: createOrderDto.assetId,
       shares: createOrderDto.shares,
@@ -20,12 +24,25 @@ export class OrdersService {
   }
 
   findAll(filter: { walletId: string }) {
-    return this.OrderSchema.find({ wallet: filter.walletId });
+    return this.orderSchema
+      .find({ wallet: filter.walletId })
+      .populate('asset') as Promise<(Order & { asset: Asset })[]>;
     //.populate(['asset', 'trade']);
   }
 
-  findOne(id: number) {
-    return this.OrderSchema.findById(id);
+  //  return this.walletSchema.findById(id).populate([
+  //       {
+  //         path: 'assets', //walletasset
+  //         populate: ['asset'],
+  //       },
+  //     ]) as Promise<
+  //       (Wallet & { assets: (WalletAsset & { asset: Asset })[] }) | null
+  //     >;
+
+  findOne(id: string) {
+    return this.orderSchema.findById(id);
     //.populate(['asset', 'trade']);
   }
+
+  createTrade() {}
 }

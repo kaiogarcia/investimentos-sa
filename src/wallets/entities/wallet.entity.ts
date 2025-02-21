@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import crypto from 'crypto';
 import { WalletAsset, WalletAssetDocument } from './wallet-asset.entity';
 
 export type WalletDocument = HydratedDocument<Wallet>;
@@ -21,3 +22,4 @@ export class Wallet {
 }
 
 export const WalletSchema = SchemaFactory.createForClass(Wallet);
+//schema com tipos

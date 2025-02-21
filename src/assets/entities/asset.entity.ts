@@ -1,9 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import crypto from 'crypto';
 
 export type AssetDocument = HydratedDocument<Asset>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  collectionOptions: {
+    changeStreamPreAndPostImages: {
+      enabled: true,
+    },
+  },
+})
 export class Asset {
   @Prop({ default: () => crypto.randomUUID() })
   _id: string;
@@ -25,3 +33,4 @@ export class Asset {
 }
 
 export const AssetSchema = SchemaFactory.createForClass(Asset);
+//schema com tipos
